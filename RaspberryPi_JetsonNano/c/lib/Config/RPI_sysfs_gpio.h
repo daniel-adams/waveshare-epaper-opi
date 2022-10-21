@@ -57,10 +57,13 @@
 #define GPIO22 22 // 15, 22
 #define GPIO23 23 // 16, 23
 #define GPIO24 24 // 18, 24
-#define SPI0_MOSI 10 // 19, 10
+// #define SPI0_MOSI 10 // 19, 10
+#define SPI0_MOSI 15	// this is a GPIO number corresponding to physical pin 19 on Orange Pi Zero Plus; fixes DIN when using USELIB_RPI=USE_DEV_LIB
+// #define SPI0_MOSI 11	// this is a wiringPi number corresponding to physical pin 19 on Orange Pi Zero Plus; might fix DIN if using USELIB_RPI=USE_WIRINGPI_LIB, dunno
 #define SPI0_MISO 9 // 21, 9
 #define GPIO25 28 // 22, 25
-#define SPI0_SCK 11 // 23, 11
+// #define SPI0_SCK 11 // 23, 11
+#define SPI0_SCK 14	// this is a GPIO number corresponding to physical pin 23 on Orange Pi Zero Plus; fixes CLK
 #define SPI0_CS0 8 // 24, 8
 #define SPI0_CS1 7 // 26, 7
 #define GPIO5 5 // 29, 5

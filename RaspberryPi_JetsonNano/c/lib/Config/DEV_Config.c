@@ -218,9 +218,9 @@ static int DEV_Equipment_Testing(void)
 
 	printf("Current environment: ");
 #ifdef RPI
-	char systems[][9] = {"Raspbian", "Debian", "NixOS"};
+	char systems[][9] = {"Raspbian", "Debian", "Armbian", "NixOS"};
 	int detected = 0;
-	for(int i=0; i<3; i++) {
+	for(int i=0; i<4; i++) {
 		if (strstr(issue_str, systems[i]) != NULL) {
 			printf("%s\n", systems[i]);
 			detected = 1;
@@ -252,10 +252,20 @@ static int DEV_Equipment_Testing(void)
 void DEV_GPIO_Init(void)
 {
 #ifdef RPI
-	EPD_RST_PIN     = 17;
-	EPD_DC_PIN      = 25;
-	EPD_CS_PIN      = 8;
-	EPD_BUSY_PIN    = 24;
+	// EPD_RST_PIN     = 17;	// original
+	EPD_RST_PIN     = 12;	// corresponding GPIO number on Orange Pi Zero Plus
+
+	// EPD_DC_PIN      = 25;	// original
+	EPD_DC_PIN      = 2;	// corresponding GPIO number on Orange Pi Zero Plus
+
+	// EPD_CS_PIN      = 8;	// original
+	EPD_CS_PIN      = 13;	// corresponding GPIO number on Orange Pi Zero Plus
+
+	// EPD_BUSY_PIN    = 24;	// original
+	// EPD_BUSY_PIN    = 11;	// corresponding GPIO number on Orange Pi Zero Plus
+
+	// moving the busy signal to physical pin 11 (GPIO # 1) solved an issue with garbled images. not sure which other pins would also work; I picked this one at random
+	EPD_BUSY_PIN    = 1;	// GPIO number on Orange Pi Zero Plus
 #elif JETSON
 	EPD_RST_PIN     = GPIO17;
 	EPD_DC_PIN      = GPIO25;
@@ -301,8 +311,8 @@ UBYTE DEV_Module_Init(void)
 	bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0, LOW);     //enable cs0
 
 #elif USE_WIRINGPI_LIB
-	//if(wiringPiSetup() < 0)//use wiringpi Pin number table
-	if(wiringPiSetupGpio() < 0) { //use BCM2835 Pin number table
+	if(wiringPiSetup() < 0) {//use wiringpi Pin number table
+	// if(wiringPiSetupGpio() < 0) { //use BCM2835 Pin number table
 		printf("set wiringPi lib failed	!!! \r\n");
 		return 1;
 	} else {
@@ -311,12 +321,15 @@ UBYTE DEV_Module_Init(void)
 
 	// GPIO Config
 	DEV_GPIO_Init();
-	wiringPiSPISetup(0,10000000);
+	// wiringPiSPISetup(0,10000000);
+	wiringPiSPISetup(1,10000000);
 	// wiringPiSPISetupMode(0, 32000000, 0);
 #elif USE_DEV_LIB
-	printf("Write and read /dev/spidev0.0 \r\n");
+	// printf("Write and read /dev/spidev0.0 \r\n");
+	printf("Write and read /dev/spidev1.0 \r\n");
 	DEV_GPIO_Init();
-	DEV_HARDWARE_SPI_begin("/dev/spidev0.0");
+	// DEV_HARDWARE_SPI_begin("/dev/spidev0.0");
+	DEV_HARDWARE_SPI_begin("/dev/spidev1.0");
     DEV_HARDWARE_SPI_setSpeed(10000000);
 #endif
 

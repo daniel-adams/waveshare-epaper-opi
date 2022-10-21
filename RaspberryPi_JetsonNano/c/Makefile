@@ -181,15 +181,20 @@ JETSON_DEV_C = $(wildcard $(DIR_BIN)/sysfs_software_spi.o $(DIR_BIN)/sysfs_gpio.
 
 DEBUG = -D DEBUG
 
-USELIB_RPI = USE_BCM2835_LIB
+# USELIB_RPI = USE_BCM2835_LIB
 # USELIB_RPI = USE_WIRINGPI_LIB
-# USELIB_RPI = USE_DEV_LIB
+USELIB_RPI = USE_DEV_LIB
 
 LIB_RPI=-Wl,--gc-sections
 ifeq ($(USELIB_RPI), USE_BCM2835_LIB)
 	LIB_RPI += -lbcm2835 -lm 
 else ifeq ($(USELIB_RPI), USE_WIRINGPI_LIB)
+<<<<<<< HEAD
 	LIB_RPI += -lwiringPi -lm 
+=======
+    # LIB_RPI += -lwiringPi -lm
+    LIB_RPI += -lwiringPi -lm -lpthread -lrt -lcrypt
+>>>>>>> 11d7389 (got the C example to work with Orange Pi Zero Plus)
 else ifeq ($(USELIB_RPI), USE_DEV_LIB)
 	LIB_RPI += -lm 
 endif
